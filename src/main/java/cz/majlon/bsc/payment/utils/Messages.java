@@ -27,7 +27,7 @@ public class Messages {
                 .nextLine("* add - allows user to add new payment. expected format is Currency code then amount")
                 .nextLine("* get - allows user to get single payment by id")
                 .nextLine("* rem - allows user to remove single payment by id")
-                .nextLine("* rate - allows user to add exchange value to USD ")
+                .nextLine("* rate - allows user to add exchange value to USD. Same code will overwrite previous rate")
                 .nextLine("* history - prints transaction history")
                 .nextLine("* balance - prints current balance on account")
                 .nextLine("* import - imports payments from specified text file")

@@ -24,7 +24,7 @@ public class ConsoleInputReader implements Runnable {
 
         final Scanner in = new Scanner(System.in);
         while (in.hasNext()) {
-            final String line = in.nextLine();
+            final String line = in.nextLine().trim().toLowerCase();
 
             if (!router.readCommand(line)) {
                 break;

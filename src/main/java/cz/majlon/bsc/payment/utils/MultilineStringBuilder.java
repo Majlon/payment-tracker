@@ -83,10 +83,9 @@ public class MultilineStringBuilder {
 
     private String getExchangeRate(Balance balance) {
         if (balance.getExchangeRate() != null) {
-            MathContext round = new MathContext(2);
-            BigDecimal rateValue = new BigDecimal(balance.getExchangeRate());
-            return (balance.getAmount().multiply(rateValue)).round(round) +
-                    " (USD :" + rateValue.round(round);
+            final MathContext round = new MathContext(10);
+            final BigDecimal rateValue = new BigDecimal(balance.getExchangeRate());
+            return " (USD :" + (balance.getAmount().multiply(rateValue)).round(round).toPlainString() + ")";
         } else {
             return "N/A";
         }
