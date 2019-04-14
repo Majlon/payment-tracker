@@ -8,7 +8,7 @@ import java.util.Collection;
 public class Messages {
 
     public static String welcomeMessage() {
-        MultilineStringBuilder builder = new MultilineStringBuilder();
+        final MultilineStringBuilder builder = new MultilineStringBuilder();
         return builder
                 .nextLine("Welcome in payment tracker! type help")
                 .lineSeparator()
@@ -16,7 +16,7 @@ public class Messages {
     }
 
     public static String helpMessage() {
-        MultilineStringBuilder builder = new MultilineStringBuilder();
+        final MultilineStringBuilder builder = new MultilineStringBuilder();
         return builder
                 .nextLine("/----------------    Help    ---------------------\\")
                 .emptyLine()
@@ -30,14 +30,14 @@ public class Messages {
                 .nextLine("* rate - allows user to add exchange value to USD ")
                 .nextLine("* history - prints transaction history")
                 .nextLine("* balance - prints current balance on account")
-                .nextLine("* import - imports payments from specified file")
-                .nextLine("* export - export payments to specified file")
+                .nextLine("* import - imports payments from specified text file")
+                .nextLine("* export - export payments to specified text file")
                 .nextLine("* quit - Terminates application")
                 .make();
     }
 
     public static String balance(Collection<Balance> balance) {
-        MultilineStringBuilder builder = new MultilineStringBuilder();
+        final MultilineStringBuilder builder = new MultilineStringBuilder();
         return builder
                 .balanceTableHeader()
                 .balanceTableRows(balance)
@@ -47,7 +47,7 @@ public class Messages {
     }
 
     public static String history(Collection<Payment> payments) {
-        MultilineStringBuilder builder = new MultilineStringBuilder();
+        final MultilineStringBuilder builder = new MultilineStringBuilder();
         return builder
                 .historyTableHeader()
                 .historyTableRows(payments)
