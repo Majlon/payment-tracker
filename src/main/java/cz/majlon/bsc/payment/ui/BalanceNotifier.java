@@ -5,11 +5,17 @@ import cz.majlon.bsc.payment.service.TrackerService;
 import cz.majlon.bsc.payment.utils.Messages;
 
 import java.util.Collection;
+import java.util.Date;
+
 
 public class BalanceNotifier implements Runnable {
 
     final private TrackerService trackerService;
     final private Thread parent;
+
+    private static final long MINUTE = 60000L;
+    private static final long SECOND = 1000L;
+
 
     public BalanceNotifier(TrackerService trackerService, Thread parent) {
         this.trackerService = trackerService;
@@ -18,16 +24,21 @@ public class BalanceNotifier implements Runnable {
 
     @Override
     public void run() {
-        while (parent.isAlive()) {
-            try {
-                Thread.sleep(60000L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        long lastExecuted = new Date().getTime();
 
-            System.out.println("* Automatic Balance notification *");
-            Collection<Balance> balance = trackerService.getBalance();
-            System.out.println(Messages.balance(balance));
+        while (parent.isAlive()) {
+            if (new Date().getTime() - lastExecuted <= MINUTE && parent.isAlive()) {
+                try {
+                    Thread.sleep(SECOND);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("* Automatic Balance notification *");
+                Collection<Balance> balance = trackerService.getBalance();
+                System.out.println(Messages.balance(balance));
+                lastExecuted = new Date().getTime();
+            }
         }
     }
 }
