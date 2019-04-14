@@ -17,8 +17,8 @@ public class CommandRouterService {
     }
 
     public boolean readCommand(String input) {
-        Command command = Command.parseCommand(input);
-        String commandBody = command.getCommandBody(input);
+        final Command command = Command.parseCommand(input);
+        final String commandBody = command.getCommandBody(input);
 
         switch (command) {
             case ADD: {
@@ -112,6 +112,9 @@ public class CommandRouterService {
         trackerService.importPayments(fileName);
     }
 
+    /**
+     * Testing method not mentioned in command overview
+     */
     private void addTestData() {
         System.out.println("Adding testing data");
         new Thread(() -> {

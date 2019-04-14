@@ -21,6 +21,12 @@ public enum Command {
         this.command = command;
     }
 
+    /**
+     * Parses Command enumeration from whole command
+     *
+     * @param input console command as String
+     * @return Command enum
+     */
     public static Command parseCommand(String input) {
         String prep = input.trim().toLowerCase();
         String[] parts = prep.split("\\s", 2);
@@ -32,9 +38,15 @@ public enum Command {
         }
     }
 
+    /**
+     * Returns rest of command body without command keyword for further processing
+     *
+     * @param input console command as String
+     * @return Command body as String
+     */
     public String getCommandBody(String input) {
         if (!this.command.equals(NOT_RECOGNIZED.command)) {
-            return input.replaceFirst(command, "");
+            return input.replaceFirst(command, "").trim();
         } else {
             return NOT_RECOGNIZED.command;
         }

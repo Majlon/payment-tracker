@@ -2,6 +2,10 @@ package cz.majlon.bsc.payment.domain;
 
 import java.math.BigDecimal;
 
+/**
+ * Balance class holds information about final sum of certain currency in
+ * tracker. Also exchange rate to USD can be set.
+ */
 public class Balance {
 
     private String currencyCode;

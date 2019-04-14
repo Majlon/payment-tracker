@@ -11,13 +11,13 @@ public class PaymentTracker {
 
     public static void main(String[] args) {
 
-        TrackerService trackerService = new TrackerService(dataContainer);
+        final TrackerService trackerService = new TrackerService(dataContainer);
 
-        ConsoleInputReader reader = new ConsoleInputReader(trackerService);
+        final ConsoleInputReader reader = new ConsoleInputReader(trackerService);
         Thread readerThread = new Thread(reader);
         readerThread.start();
 
-        BalanceNotifier notifier = new BalanceNotifier(trackerService, readerThread);
+        final BalanceNotifier notifier = new BalanceNotifier(trackerService, readerThread);
         new Thread(notifier).start();
     }
 }

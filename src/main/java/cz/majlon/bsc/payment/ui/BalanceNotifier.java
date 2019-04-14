@@ -7,15 +7,18 @@ import cz.majlon.bsc.payment.utils.Messages;
 import java.util.Collection;
 import java.util.Date;
 
-
+/**
+ * Object for periodical balance notification. Every one minute
+ * console will output balance report. If parent thread ends notifier
+ * will terminate itself within at least one second.
+ */
 public class BalanceNotifier implements Runnable {
 
     final private TrackerService trackerService;
     final private Thread parent;
 
-    private static final long MINUTE = 60000L;
     private static final long SECOND = 1000L;
-
+    private static final long MINUTE = 60 * SECOND;
 
     public BalanceNotifier(TrackerService trackerService, Thread parent) {
         this.trackerService = trackerService;

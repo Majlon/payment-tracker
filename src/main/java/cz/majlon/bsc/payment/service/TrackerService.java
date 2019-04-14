@@ -24,6 +24,12 @@ public class TrackerService {
         this.idCounter = new AtomicLong(0L);
     }
 
+    /**
+     * Basic payment saving.
+     *
+     * @param payment as Payment Object
+     * @return saved Payment with set ID and Creation Date
+     */
     public Payment savePayment(Payment payment) {
         System.out.println("Saving payment... ");
 
@@ -39,9 +45,17 @@ public class TrackerService {
         }
     }
 
+    /**
+     * Overloaded method for saving directly from command body. E.g.
+     * this method contains also parsing to Payment from String.
+     *
+     * @param commandBody as String
+     * @return saved Payment with set ID and Creation Date
+     * @see cz.majlon.bsc.payment.service.TrackerService#savePayment(Payment)
+     */
     public Payment savePayment(String commandBody) {
         try {
-            Payment payment2Save = parsePayment(commandBody);
+            final Payment payment2Save = parsePayment(commandBody);
             return this.savePayment(payment2Save);
         } catch (IllegalArgumentException ex) {
             System.out.println("Unable to parse payment: " + commandBody);
@@ -49,8 +63,15 @@ public class TrackerService {
         }
     }
 
+    /**
+     * Method for importing Payments from file. File is expected
+     * to be in same directory. Also plain txt is expected.
+     *
+     * @param fileName as String to read from.
+     * @return true if successful, false if otherwise.
+     */
     public boolean importPayments(String fileName) {
-        BufferedReader fileReader;
+        final BufferedReader fileReader;
         int counter = 0;
         try {
             fileReader = FileIO.getFileReader(fileName);
@@ -63,32 +84,41 @@ public class TrackerService {
             }
             System.out.println("Imported " + counter + " payments");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("I/O Error occurred during import!");
+            return false;
         } catch (IllegalArgumentException iae) {
-            System.out.println("sumtin wen wong");
-            iae.printStackTrace();
+            System.out.println("Payment parsing error occurred during import!");
+            return false;
         }
         return true;
     }
 
+    /**
+     * Method for exporting tracker Report. Both history and balance.
+     * Plain txt file will be created in directory from which app is launched.
+     *
+     * @param fileName as String to write to.
+     * @return true if successful, false if otherwise.
+     */
     public boolean exportPayments(String fileName) {
-        BufferedWriter fileWriter;
+        final BufferedWriter fileWriter;
 
         try {
             fileWriter = FileIO.getFileWriter(fileName);
-            String history = Messages.history(this.dataContainer.getData());
-            String balance = Messages.balance(this.getBalance());
+            final String history = Messages.history(this.dataContainer.getData());
+            final String balance = Messages.balance(this.getBalance());
 
             fileWriter.write(history);
             fileWriter.write(balance);
             fileWriter.flush();
             fileWriter.close();
-            System.out.println("Exported  payments");
+            System.out.println("Payments exported successfully to: " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("I/O Error occurred during import!");
+            return false;
         } catch (IllegalArgumentException iae) {
-            System.out.println("sumtin wen wong");
-            iae.printStackTrace();
+            System.out.println("Payment parsing error occurred during import!");
+            return false;
         }
         return true;
     }
@@ -98,7 +128,7 @@ public class TrackerService {
     }
 
     public Payment getPaymentById(Long id) {
-        Optional<Payment> promise = this.dataContainer.getData()
+        final Optional<Payment> promise = this.dataContainer.getData()
                 .stream()
                 .filter(payment -> payment.getId().equals(id))
                 .findFirst();
@@ -113,7 +143,7 @@ public class TrackerService {
 
     public Payment getPaymentById(String commandBody) {
         try {
-            Long id = Long.valueOf(commandBody.trim());
+            final Long id = Long.valueOf(commandBody.trim());
             return this.getPaymentById(id);
         } catch (NumberFormatException ex) {
             System.out.println("Unable to parse id: " + commandBody);
@@ -122,7 +152,7 @@ public class TrackerService {
     }
 
     public Boolean removePayment(Long id) {
-        Payment payment2Remove = this.getPaymentById(id);
+        final Payment payment2Remove = this.getPaymentById(id);
         Boolean result;
         if (payment2Remove != null) {
             result = this.dataContainer.getData().remove(payment2Remove);
@@ -140,7 +170,7 @@ public class TrackerService {
 
     public Boolean removePayment(String commandBody) {
         try {
-            Long id = Long.valueOf(commandBody.trim());
+            final Long id = Long.valueOf(commandBody.trim());
             return this.removePayment(id);
         } catch (NumberFormatException ex) {
             System.out.println("Unable to parse id: " + commandBody);
@@ -154,15 +184,22 @@ public class TrackerService {
         ).collect(Collectors.toList());
     }
 
+    /**
+     * This method returns calculated balance from all payment records.
+     * Currencies, that have total amount = 0 are omitted.
+     *
+     * @see cz.majlon.bsc.payment.domain.Balance
+     * @return Collection of calculated Balance
+     */
     public Collection<Balance> getBalance() {
-        List<Balance> result = new ArrayList<>();
-        Map<String, BigDecimal> runningTotal = new HashMap<>();
+        final List<Balance> result = new ArrayList<>();
+        final Map<String, BigDecimal> runningTotal = new HashMap<>();
 
         this.dataContainer.getData().forEach(payment -> {
-            String code = payment.getCurrencyCode();
+            final String code = payment.getCurrencyCode();
             if (runningTotal.containsKey(code)) {
-                BigDecimal previousValue = runningTotal.get(code);
-                BigDecimal newValue = previousValue.add(payment.getAmount());
+                final BigDecimal previousValue = runningTotal.get(code);
+                final BigDecimal newValue = previousValue.add(payment.getAmount());
                 runningTotal.put(code, newValue);
             } else {
                 runningTotal.put(code, payment.getAmount());
@@ -177,19 +214,17 @@ public class TrackerService {
                             .get(eachTotal.getKey())));
         }
 
-        List<Balance> zeroCurrencies = result.stream()
+        final List<Balance> zeroCurrencies = result.stream()
                 .filter(balance -> balance.getAmount().equals(new BigDecimal(0)))
                 .collect(Collectors.toList());
 
         result.removeAll(zeroCurrencies);
-
         return result;
     }
 
-
     public Boolean saveExchangeRate(String commandBody) {
-        String trimmed = commandBody.trim().toLowerCase();
-        String[] parts = trimmed.split("\\s");
+        final String trimmed = commandBody.trim().toLowerCase();
+        final String[] parts = trimmed.split("\\s");
 
         if (parts.length == 2) {
             this.dataContainer.getExchangeRate().put(

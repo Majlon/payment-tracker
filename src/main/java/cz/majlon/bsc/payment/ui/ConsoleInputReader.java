@@ -6,9 +6,13 @@ import cz.majlon.bsc.payment.utils.Messages;
 
 import java.util.Scanner;
 
+/**
+ * Object for continuous reading user input from console.
+ * Recognized commands are then send for processing via @CommandRouterService.
+ */
 public class ConsoleInputReader implements Runnable {
 
-    private CommandRouterService router;
+    final private CommandRouterService router;
 
     public ConsoleInputReader(TrackerService trackerService) {
         this.router = new CommandRouterService(trackerService);
