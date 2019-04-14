@@ -176,6 +176,13 @@ public class TrackerService {
                     this.dataContainer.getExchangeRate()
                             .get(eachTotal.getKey())));
         }
+
+        List<Balance> zeroCurrencies = result.stream()
+                .filter(balance -> balance.getAmount().equals(new BigDecimal(0)))
+                .collect(Collectors.toList());
+
+        result.removeAll(zeroCurrencies);
+
         return result;
     }
 
